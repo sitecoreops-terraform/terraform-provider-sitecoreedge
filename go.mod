@@ -1,4 +1,4 @@
-module github.com/sitecoreops-terraform/terraform-provider-sitecore-edge
+module github.com/sitecoreops-terraform/terraform-provider-sitecoreedge
 
 go 1.24.0
 

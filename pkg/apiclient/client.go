@@ -2,13 +2,10 @@ package apiclient
 
 import (
 	"bytes"
-	"crypto/tls"
 	"encoding/json"
 	"fmt"
 	"io"
-	"log"
 	"net/http"
-	"net/url"
 	"os"
 	"strings"
 )
@@ -51,7 +48,7 @@ func NewClient(clientID string, clientSecret string) (*Client, error) {
 
 func NewClientWithAllConfig(baseUrl string, authUrl string, clientId string, clientSecret string, cliUserConfigPath string, httpClient *http.Client) (*Client, error) {
 
-	BaseURL := "https://xmclouddeploy-api.sitecorecloud.io"
+	BaseURL := "https://edge.sitecorecloud.io"
 	AuthURL := "https://auth.sitecorecloud.io"
 
 	if len(baseUrl) > 0 {
@@ -74,11 +71,11 @@ func NewClientWithAllConfig(baseUrl string, authUrl string, clientId string, cli
 
 		// If urls are not explicitly overriden, then use values from config
 		if len(baseUrl) == 0 {
-			BaseURL = cliConfig.Endpoints.XMCloud.Host
+			BaseURL = cliConfig.Endpoints.Edge.Host
 		}
 
 		if len(authUrl) == 0 {
-			AuthURL = cliConfig.Endpoints.XMCloud.Authority
+			AuthURL = cliConfig.Endpoints.Edge.Authority
 		}
 	}
 
@@ -86,7 +83,6 @@ func NewClientWithAllConfig(baseUrl string, authUrl string, clientId string, cli
 		return nil, fmt.Errorf("client_id and client_secret must be provided")
 	}
 
-	setupProxy(httpClient)
 	return &Client{
 		BaseURL:      strings.TrimSuffix(BaseURL, "/"),
 		AuthURL:      strings.TrimSuffix(AuthURL, "/"),
@@ -95,22 +91,6 @@ func NewClientWithAllConfig(baseUrl string, authUrl string, clientId string, cli
 		CliConfig:    cliConfig,
 		HTTPClient:   httpClient,
 	}, nil
-}
-
-func setupProxy(client *http.Client) {
-	proxy := os.Getenv("HTTPS_PROXY")
-
-	if proxy != "" {
-		proxyURL, err := url.Parse(proxy)
-		if err != nil {
-			log.Printf("Invalid proxy URL: %v", err)
-		}
-		log.Printf("Using insecure proxy for %s", proxy)
-		client.Transport = &http.Transport{
-			Proxy:           http.ProxyURL(proxyURL),
-			TLSClientConfig: &tls.Config{InsecureSkipVerify: true},
-		}
-	}
 }
 
 // doRequest handles the common request logic including authentication
@@ -162,4 +142,23 @@ func (c *Client) doRequest(opts RequestOptions) (*http.Response, error) {
 	}
 
 	return resp, nil
+}
+
+func (c *Client) doRequestAndParse(opts RequestOptions, result interface{}) error {
+	resp, err := c.doRequest(opts)
+	if err != nil {
+		return err
+	}
+	defer resp.Body.Close()
+
+	body, err := io.ReadAll(resp.Body)
+	if err != nil {
+		return fmt.Errorf("failed to read response body: %v", err)
+	}
+
+	if err := json.Unmarshal(body, result); err != nil {
+		return fmt.Errorf("failed to unmarshal response: %v", err)
+	}
+
+	return nil
 }

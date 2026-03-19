@@ -1,0 +1,9 @@
+provider_installation {
+  dev_overrides {
+    "sitecoreops-terraform/sitecoreedge" = "/workspaces/terraform-provider-sitecore-edge"
+  }
+
+  direct {
+    
+  }
+}

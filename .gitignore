@@ -81,12 +81,13 @@ terraform.rc
 *.pem
 
 ## Result
-terraform-provider-sitecore-edge
+terraform-provider-sitecoreedge
 examples/resources/**/provider*.tf
-examples/data-sources/**/provider*.tf
+examples/datasources/**/provider*.tf
 
 ## dotnet tool Sitecore CLI, we ignore everything
 nuget.config
 dotnet-tools.json
 sitecore.json
 .sitecore/
+ca-bundle.pem

@@ -1,0 +1,22 @@
+---
+page_title: "{{.ProviderShortName}} Provider"
+description: |-
+{{ .Description | plainmarkdown | trimspace | prefixlines "  " }}
+---
+
+# {{.ProviderShortName}} Provider
+
+{{ .Description | trimspace }}
+
+The provider is based on the [Sitecore Experience Edge Admin API](https://doc.sitecore.com/sai/en/developers/sitecoreai/admin-api.html)
+
+{{ if .HasExamples -}}
+## Example Usage
+
+{{- range .ExampleFiles }}
+
+{{ tffile . }}
+{{- end }}
+{{- end }}
+
+{{ .SchemaMarkdown | trimspace }}

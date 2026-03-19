@@ -87,11 +87,11 @@ func TestFindCLIUserConfig(t *testing.T) {
 	}
 
 	// Verify the token
-	if config.Endpoints.XMCloud.AccessToken != "test-access-token" {
-		t.Errorf("Expected access token 'test-access-token', got '%s'", config.Endpoints.XMCloud.AccessToken)
+	if config.Endpoints.Edge.AccessToken != "test-access-token" {
+		t.Errorf("Expected access token 'test-access-token', got '%s'", config.Endpoints.Edge.AccessToken)
 	}
 
-	if config.Endpoints.XMCloud.Host != "https://test-api.sitecorecloud.io/" {
-		t.Errorf("Expected host 'https://test-api.sitecorecloud.io/', got '%s'", config.Endpoints.XMCloud.Host)
+	if config.Endpoints.Edge.Host != "https://test-edge.sitecorecloud.io/" {
+		t.Errorf("Expected host 'https://test-api.sitecorecloud.io/', got '%s'", config.Endpoints.Edge.Host)
 	}
 }

@@ -11,7 +11,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/provider/schema"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	"github.com/hashicorp/terraform-plugin-framework/types"
-	"github.com/sitecoreops-terraform/terraform-provider-sitecore-edge/pkg/apiclient"
+	"github.com/sitecoreops-terraform/terraform-provider-sitecoreedge/pkg/apiclient"
 )
 
 // Ensure the implementation satisfies the expected interfaces
@@ -45,26 +45,26 @@ type sitecoreProviderModel struct {
 
 // Metadata returns the provider type name
 func (p *sitecoreProvider) Metadata(_ context.Context, _ provider.MetadataRequest, resp *provider.MetadataResponse) {
-	resp.TypeName = "sitecoreai"
+	resp.TypeName = "sitecoreedge"
 	resp.Version = p.version
 }
 
 // Schema defines the provider-level schema for configuration data
 func (p *sitecoreProvider) Schema(_ context.Context, _ provider.SchemaRequest, resp *provider.SchemaResponse) {
 	resp.Schema = schema.Schema{
-		Description: "Interact with SitecoreAI",
+		Description: "Interact with SitecoreAI Experience Edge",
 		Attributes: map[string]schema.Attribute{
 			"client_id": schema.StringAttribute{
-				Description: "The client ID for SitecoreAI Edge authentication",
+				Description: "The client ID for SitecoreAI Edge authentication. Can also be specified with env var SITECORE_EDGE_CLIENT_ID.",
 				Optional:    true,
 			},
 			"client_secret": schema.StringAttribute{
-				Description: "The client secret for SitecoreAI Edge authentication",
+				Description: "The client secret for SitecoreAI Edge authentication. Can also be specified with env var SITECORE_EDGE_CLIENT_SECRET.",
 				Optional:    true,
 				Sensitive:   true,
 			},
 			"use_cli": schema.BoolAttribute{
-				Description: "Use Sitecore CLI authentication (searches for .sitecore/user.json)",
+				Description: "Use Sitecore CLI authentication (uses .sitecore/user.json file)",
 				Optional:    true,
 			},
 		},
@@ -107,28 +107,26 @@ func (p *sitecoreProvider) Configure(ctx context.Context, req provider.Configure
 	// attributes, it must be a known value
 	if config.ClientID.IsUnknown() || config.ClientSecret.IsUnknown() || config.UseCLI.IsUnknown() {
 		resp.Diagnostics.AddError(
-			"Unknown Sitecore API Configuration",
+			"Unknown Sitecore Edge API Configuration",
 			"Cannot use unknown values for Sitecore API configuration",
 		)
 		return
 	}
 
 	if useCLI {
-		// Try CLI authentication
 		client, err = apiclient.NewClientFromCLI("")
 		if err != nil {
 			resp.Diagnostics.AddError(
-				"Sitecore CLI Authentication Failed",
+				"Sitecore Edge CLI Authentication Failed",
 				"Unable to authenticate using Sitecore CLI: "+err.Error(),
 			)
 			return
 		}
 	} else {
-		// Create a new Sitecore API client
 		client, err = apiclient.NewClient(clientID, clientSecret)
 		if err != nil {
 			resp.Diagnostics.AddError(
-				"SitecoreAI API Authentication Failed",
+				"Sitecore Edge API Authentication Failed",
 				"Unable to authenticate using Client Id and Client Secret: "+err.Error(),
 			)
 			return
@@ -139,7 +137,7 @@ func (p *sitecoreProvider) Configure(ctx context.Context, req provider.Configure
 	err = client.Authenticate()
 	if err != nil {
 		resp.Diagnostics.AddError(
-			"Sitecore API Client Authentication Failed",
+			"Sitecore Edge API Client Authentication Failed",
 			"Unable to authenticate Sitecore API client: "+err.Error(),
 		)
 		return
@@ -153,10 +151,15 @@ func (p *sitecoreProvider) Configure(ctx context.Context, req provider.Configure
 
 // DataSources defines the data sources implemented in the provider
 func (p *sitecoreProvider) DataSources(_ context.Context) []func() datasource.DataSource {
-	return []func() datasource.DataSource{}
+	return []func() datasource.DataSource{
+		NewTenantIDDataSource,
+	}
 }
 
 // Resources defines the resources implemented in the provider
 func (p *sitecoreProvider) Resources(_ context.Context) []func() resource.Resource {
-	return []func() resource.Resource{}
+	return []func() resource.Resource{
+		NewWebhookResource,
+		NewSettingsResource,
+	}
 }

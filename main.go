@@ -6,7 +6,7 @@ import (
 	"log"
 
 	"github.com/hashicorp/terraform-plugin-framework/providerserver"
-	"github.com/sitecoreops-terraform/terraform-provider-sitecore-edge/pkg/provider"
+	"github.com/sitecoreops-terraform/terraform-provider-sitecoreedge/pkg/provider"
 )
 
 func main() {
@@ -16,7 +16,7 @@ func main() {
 	flag.Parse()
 
 	opts := providerserver.ServeOpts{
-		Address: "registry.terraform.io/sitecoreops-terraform/sitecore-edge",
+		Address: "registry.terraform.io/sitecoreops-terraform/sitecoreedge",
 		Debug:   debugMode,
 	}
 

@@ -24,12 +24,12 @@ type AuthResponse struct {
 // CLIUserConfig represents the structure of .sitecore/user.json file
 type CLIUserConfig struct {
 	Endpoints struct {
-		XMCloud struct {
+		Edge struct {
 			Host         string `json:"host"`
 			Authority    string `json:"authority"`
 			AccessToken  string `json:"accessToken"`
 			RefreshToken string `json:"refreshToken"`
-		} `json:"xmCloud"`
+		} `json:"edge-prod"`
 	} `json:"endpoints"`
 }
 
@@ -43,8 +43,8 @@ func (c *Client) Authenticate() error {
 	}
 
 	// If we have token in cli config, no need to authenticate
-	if c.CliConfig != nil && len(c.CliConfig.Endpoints.XMCloud.AccessToken) > 0 {
-		c.Token = c.CliConfig.Endpoints.XMCloud.AccessToken
+	if c.CliConfig != nil && len(c.CliConfig.Endpoints.Edge.AccessToken) > 0 {
+		c.Token = c.CliConfig.Endpoints.Edge.AccessToken
 		return nil
 	}
 
