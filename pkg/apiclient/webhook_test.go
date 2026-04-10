@@ -20,7 +20,10 @@ func TestGetWebhooks(t *testing.T) {
 		}
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(http.StatusOK)
-		w.Write([]byte(sampleResponse))
+		_, err := w.Write([]byte(sampleResponse))
+		if err != nil {
+			t.Fatalf("TestGetWebhooks write failed: %v", err)
+		}
 	}))
 	defer server.Close()
 
@@ -82,7 +85,10 @@ func TestGetWebhooksEmptyResponse(t *testing.T) {
 	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(http.StatusOK)
-		w.Write([]byte("[]"))
+		_, err := w.Write([]byte("[]"))
+		if err != nil {
+			t.Fatalf("TestGetWebhooksEmptyResponse write failed: %v", err)
+		}
 	}))
 	defer server.Close()
 
@@ -114,7 +120,10 @@ func TestGetWebhook(t *testing.T) {
 		}
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(http.StatusOK)
-		w.Write([]byte(sampleResponse))
+		_, err := w.Write([]byte(sampleResponse))
+		if err != nil {
+			t.Fatalf("TestGetWebhook write failed: %v", err)
+		}
 	}))
 	defer server.Close()
 
@@ -215,7 +224,10 @@ func TestCreateWebhookOnUpdateExcludesBody(t *testing.T) {
 
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(http.StatusCreated)
-		w.Write([]byte(`{"id":"test-id","label":"test","uri":"https://example.com","method":"POST","executionMode":"OnUpdate","createdBy":"test"}`))
+		_, err := w.Write([]byte(`{"id":"test-id","label":"test","uri":"https://example.com","method":"POST","executionMode":"OnUpdate","createdBy":"test"}`))
+		if err != nil {
+			t.Fatalf("TestCreateWebookOnUpdateExcludesBody write failed: %v", err)
+		}
 	}))
 	defer server.Close()
 
@@ -277,7 +289,10 @@ func TestCreateWebhookWithBodyInclude(t *testing.T) {
 
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(http.StatusCreated)
-		w.Write([]byte(`{"id":"test-id","label":"test","uri":"https://example.com","method":"POST","bodyInclude":{"updated":"true"},"executionMode":"OnUpdate","createdBy":"test"}`))
+		_, err := w.Write([]byte(`{"id":"test-id","label":"test","uri":"https://example.com","method":"POST","bodyInclude":{"updated":"true"},"executionMode":"OnUpdate","createdBy":"test"}`))
+		if err != nil {
+			t.Fatalf("TestCreateWebhooksWithBodyIncluded write failed: %v", err)
+		}
 	}))
 	defer server.Close()
 
@@ -335,7 +350,10 @@ func TestCreateWebhookOnEndIncludesBody(t *testing.T) {
 
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(http.StatusCreated)
-		w.Write([]byte(`{"id":"test-id","label":"test","uri":"https://example.com","method":"POST","body":"expected-body-content","executionMode":"OnEnd","createdBy":"test"}`))
+		_, err := w.Write([]byte(`{"id":"test-id","label":"test","uri":"https://example.com","method":"POST","body":"expected-body-content","executionMode":"OnEnd","createdBy":"test"}`))
+		if err != nil {
+			t.Fatalf("TestCreateWebhooksOnEndIncludesBody write failed: %v", err)
+		}
 	}))
 	defer server.Close()
 
@@ -453,7 +471,8 @@ func TestUpdateWebhook(t *testing.T) {
 	var putCallCount int
 	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		if strings.Contains(r.URL.Path, "/api/admin/v1/webhooks/test-id") {
-			if r.Method == http.MethodPut {
+			switch r.Method {
+			case http.MethodPut:
 				putCallCount++
 				var receivedBody map[string]interface{}
 				if err := json.NewDecoder(r.Body).Decode(&receivedBody); err != nil {
@@ -467,11 +486,14 @@ func TestUpdateWebhook(t *testing.T) {
 				// PUT returns 204 No Content
 				w.WriteHeader(http.StatusNoContent)
 				return
-			} else if r.Method == http.MethodGet {
+			case http.MethodGet:
 				// This is the subsequent GET request to fetch the updated webhook
 				w.Header().Set("Content-Type", "application/json")
 				w.WriteHeader(http.StatusOK)
-				w.Write([]byte(sampleWebhookResponse))
+				_, err := w.Write([]byte(sampleWebhookResponse))
+				if err != nil {
+					t.Fatalf("TestUpdateWebook write failed: %v", err)
+				}
 				return
 			}
 		}
