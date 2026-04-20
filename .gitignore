@@ -83,7 +83,7 @@ terraform.rc
 ## Result
 terraform-provider-sitecoreedge
 examples/resources/**/provider*.tf
-examples/datasources/**/provider*.tf
+examples/data-sources/**/provider*.tf
 
 ## dotnet tool Sitecore CLI, we ignore everything
 nuget.config
