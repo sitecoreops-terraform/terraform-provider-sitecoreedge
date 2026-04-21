@@ -36,8 +36,8 @@ func NewClientFromCLI(configPath string) (*Client, error) {
 }
 
 func NewClientFromEnv() (*Client, error) {
-	clientID := os.Getenv("SITECOREAI_CLIENT_ID")
-	clientSecret := os.Getenv("SITECOREAI_CLIENT_SECRET")
+	clientID := os.Getenv("SITECORE_EDGE_CLIENT_ID")
+	clientSecret := os.Getenv("SITECORE_EDGE_CLIENT_SECRET")
 
 	return NewClientWithAllConfig("", "", clientID, clientSecret, "", &http.Client{})
 }
