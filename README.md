@@ -2,7 +2,7 @@
 
 This is terraform provider to enable usage and configuration of Sitecore Experience Edge resources in Terraform or OpenTofu.
 
-See the provider in [Terraform registry](https://registry.terraform.io/providers/sitecoreops-terraform/sitecoreedge/latest/docs) or []
+See the provider in [Terraform registry](https://registry.terraform.io/providers/sitecoreops-terraform/sitecoreedge/latest/docs) or [OpenTofu registry](https://search.opentofu.org/provider/sitecoreops-terraform/sitecoreedge/latest)
 
 The main focus is on establishing projects and environments by using the SitecoreAI Experience Edge APIs:
 
