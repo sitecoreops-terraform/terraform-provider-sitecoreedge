@@ -1,7 +1,7 @@
 terraform {
   required_providers {
     sitecoreedge = {
-      source = "sitecoreops-terraform/sitecore-edge"
+      source = "sitecoreops-terraform/sitecoreedge"
     }
   }
   required_version = ">= 0.1.0"

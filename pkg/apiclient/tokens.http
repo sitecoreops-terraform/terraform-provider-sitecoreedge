@@ -1,0 +1,146 @@
+# @client_id=the_actual_client_id
+# @client_secret=the_actual_client_secret
+
+###
+# @name auth
+POST https://auth.sitecorecloud.io/oauth/token
+Content-Type: application/json
+
+{
+    "audience": "https://api.sitecorecloud.io",
+    "grant_type": "client_credentials",
+    "client_id": "{{client_id}}",
+    "client_secret": "{{client_secret}}"
+}
+
+###
+# Edge API
+# https://doc.sitecore.com/sai/en/developers/sitecoreai/token-api.htm
+
+###
+# ListAll
+# @name list
+GET https://edge.sitecorecloud.io/api/apikey/v1?filterRevoked=true&label=Test
+Authorization: Bearer {{auth.response.body.access_token}}
+Content-Type: application/json
+
+# Response: 
+# {
+#   "totalCount": 1,
+#   "pageSize": 20,
+#   "currentPage": 1,
+#   "totalPages": 1,
+#   "hasNext": false,
+#   "hasPrevious": false,
+#   "keys": [
+#     {
+#       "tenantId": "jrejeunesre560d-xmc686b-dev5e15-07b9",
+#       "hash": "00f03537ec79cc405a779d47fa8a8558e803559e07f9b7878182c68149809c2d",
+#       "isRevoked": false,
+#       "label": "Test",
+#       "scopes": [
+#         "content-#everything#",
+#         "audience-delivery",
+#         "audience-preview"
+#       ],
+#       "createdBy": "JB Test",
+#       "created": "2026-04-21T12:32:42.5229383+00:00"
+#     }
+#   ]
+# }
+
+###
+# GetByHash
+GET https://edge.sitecorecloud.io/api/apikey/v1/{{list.response.body.keys.0.hash}}
+Authorization: Bearer {{auth.response.body.access_token}}
+Content-Type: application/json
+
+# Response: 200 OK
+# {
+#   "tenantId": "jrejeunesre560d-xmc686b-dev5e15-07b9",
+#   "hash": "00f03537ec79cc405a779d47fa8a8558e803559e07f9b7878182c68149809c2d",
+#   "isRevoked": false,
+#   "label": "Test",
+#   "scopes": [
+#     "content-#everything#",
+#     "audience-delivery",
+#     "audience-preview"
+#   ],
+#   "createdBy": "JB Test",
+#   "created": "2026-04-21T12:32:42.5229383+00:00"
+# }
+
+### RenameByHash
+PUT https://edge.sitecorecloud.io/api/apikey/v1/renamebyhash/{{list.response.body.keys.0.hash}}
+Authorization: Bearer {{auth.response.body.access_token}}
+Content-Type: application/json
+
+{
+    "newName": "Test"
+}
+
+# Response: 204 No Content
+
+###
+# RemoveByHash
+PUT https://edge.sitecorecloud.io/api/apikey/v1/revokebyhash/{{list.response.body.keys.1.hash}}
+Authorization: Bearer {{auth.response.body.access_token}}
+Content-Type: application/json
+
+# Response: 204 No Content
+
+###
+# Create
+# @name create
+# response is text/plain with the token
+POST https://edge.sitecorecloud.io/api/apikey/v1
+Authorization: Bearer {{auth.response.body.access_token}}
+Content-Type: application/json
+
+{
+  "CreatedBy": "JB Test",
+  "Label": "Test",
+  "Scopes": [
+        "content-#everything#",
+        "audience-delivery",
+        "audience-preview"
+  ]
+}
+
+# Response 201 Created
+# plain/text
+# the token value
+
+###
+# GetByToken
+# @name Details
+GET https://edge.sitecorecloud.io/api/apikey/v1/token
+Authorization: Bearer {{auth.response.body.access_token}}
+Content-Type: application/json
+X-GQL-Token: dmlkSitzemN3K2lqbXRWUEZTREVFQ2dmZ3dpRUE5QndzTTFoWlZmaU5kTT18anJlamV1bmVzcmU1NjBkLXhtYzY4NmItZGV2NWUxNS0wN2I5
+#X-GQL-Token: {{create.response.body}}
+
+# Response 200 OK
+# {
+#   "tenantId": "jrejeunesre560d-xmc686b-dev5e15-07b9",
+#   "hash": "17bf1e0c76b2b27a10e1c2ce024bab0703100e50af4cf37bf974ebefe6438cc8",
+#   "isRevoked": false,
+#   "label": "Test",
+#   "scopes": [
+#     "content-#everything#",
+#     "audience-delivery",
+#     "audience-preview"
+#   ],
+#   "createdBy": "JB Test",
+#   "created": "2026-04-22T07:23:04.8834339+00:00"
+# }
+
+###
+# RevokeByToken
+PUT https://edge.sitecorecloud.io/api/apikey/v1/revokebytoken
+Authorization: Bearer {{auth.response.body.access_token}}
+Content-Type: application/json
+X-GQL-Token: dmlkSitzemN3K2lqbXRWUEZTREVFQ2dmZ3dpRUE5QndzTTFoWlZmaU5kTT18anJlamV1bmVzcmU1NjBkLXhtYzY4NmItZGV2NWUxNS0wN2I5
+#X-GQL-Token: {{create.response.body}}
+
+# Response: 204 No Content

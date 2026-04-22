@@ -8,10 +8,10 @@ import (
 
 func TestClientAuthentication(t *testing.T) {
 	// Get client credentials from environment variables
-	clientID := os.Getenv("SITECOREAI_CLIENT_ID")
-	clientSecret := os.Getenv("SITECOREAI_CLIENT_SECRET")
+	clientID := os.Getenv("SITECORE_EDGE_CLIENT_ID")
+	clientSecret := os.Getenv("SITECORE_EDGE_CLIENT_SECRET")
 	if clientID == "" || clientSecret == "" {
-		t.Skip("SITECOREAI_CLIENT_ID and SITECOREAI_CLIENT_SECRET environment variables must be set to run this test")
+		t.Skip("SITECORE_EDGE_CLIENT_ID and SITECORE_EDGE_CLIENT_SECRET environment variables must be set to run this test")
 	}
 
 	// Create new client

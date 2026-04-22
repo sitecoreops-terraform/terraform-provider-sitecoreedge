@@ -52,8 +52,8 @@ To run the test, those are integration tests and will make actual calls to the S
 
 ```bash
 # Set your Sitecore credentials as environment variables
-export SITECOREAI_CLIENT_ID=your_client_id
-export SITECOREAI_CLIENT_SECRET=your_client_secret
+export SITECORE_EDGE_CLIENT_ID=your_client_id
+export SITECORE_EDGE_CLIENT_SECRET=your_client_secret
 
 # Run a specific test, here client authentication
 go test ./pkg/apiclient/... -v -run TestClientAuthentication
