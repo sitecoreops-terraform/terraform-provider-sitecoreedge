@@ -16,7 +16,7 @@ The provider is based on the [Sitecore Experience Edge Admin API](https://doc.si
 terraform {
   required_providers {
     sitecore_edge = {
-      source = "sitecoreops-terraform/sitecore-edge"
+      source = "sitecoreops-terraform/sitecoreedge"
     }
   }
   required_version = ">= 0.1.0"
@@ -44,7 +44,7 @@ provider "sitecoreedge" {
 terraform {
   required_providers {
     sitecoreedge = {
-      source = "sitecoreops-terraform/sitecore-edge"
+      source = "sitecoreops-terraform/sitecoreedge"
     }
   }
   required_version = ">= 0.1.0"
