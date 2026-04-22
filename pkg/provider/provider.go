@@ -161,5 +161,6 @@ func (p *sitecoreProvider) Resources(_ context.Context) []func() resource.Resour
 	return []func() resource.Resource{
 		NewWebhookResource,
 		NewSettingsResource,
+		NewTokenResource,
 	}
 }

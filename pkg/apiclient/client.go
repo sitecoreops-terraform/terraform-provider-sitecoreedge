@@ -95,9 +95,10 @@ func NewClientWithAllConfig(baseUrl string, authUrl string, clientId string, cli
 
 // doRequest handles the common request logic including authentication
 type RequestOptions struct {
-	Method string
-	Path   string
-	Body   interface{}
+	Method  string
+	Path    string
+	Body    interface{}
+	Headers map[string]string
 }
 
 func (c *Client) doRequest(opts RequestOptions) (*http.Response, error) {
@@ -130,6 +131,13 @@ func (c *Client) doRequest(opts RequestOptions) (*http.Response, error) {
 	// Set headers
 	req.Header.Set("Authorization", fmt.Sprintf("Bearer %s", c.Token))
 	req.Header.Set("Content-Type", "application/json")
+
+	// Set custom headers if provided
+	if opts.Headers != nil {
+		for key, value := range opts.Headers {
+			req.Header.Set(key, value)
+		}
+	}
 
 	// Send request
 	resp, err := c.HTTPClient.Do(req)
